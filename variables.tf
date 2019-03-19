@@ -42,6 +42,7 @@ variable "services" {
 variable "tags" {
   description = "The key-value maps for tagging"
   type        = "map"
+  default     = {}
 }
 
 ### network
