@@ -1,7 +1,7 @@
 # ecs.tf
 
 ### ecs cluster
-resource "aws_ecs_cluster" "this" {
+resource "aws_ecs_cluster" "master" {
   name = "${local.name}"
 }
 
