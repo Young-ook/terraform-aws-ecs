@@ -1,50 +1,63 @@
-# AWS ECS
+[[English](README.md)] [[한국어](README.ko.md)]
 
-## Using module
-You can use this module like as below example.
+# Amazon ECS (Elastic Container Service)
+[Amazon ECS](https://aws.amazon.com/ecs/) is a fully managed container orchestration service. Customers such as Duolingo, Samsung, GE, and Cookpad use ECS to run their most sensitive and mission critical applications because of its security, reliability, and scalability. This module will create an ECS cluster and capacity providers.
 
-### EC2 based cluster
-This is an exmaple to show how to create a ecs cluster using ec2 autoscaling group.
+## Examples
+- [Amazon ECS Blueprint](https://github.com/Young-ook/terraform-aws-ecs/tree/main/examples/blueprint)
+
+## Getting started
+### AWS CLI
+Follow the official guide to install and configure profiles.
+- [AWS CLI Installation](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html)
+- [AWS CLI Configuration](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-profiles.html)
+
+After the installation is complete, you can check the aws cli version:
 ```
-module "your_ecs" {
-  source  = "youngookkim/ecs/aws"
-  version = "1.0.0"
+aws --version
+aws-cli/2.5.8 Python/3.9.11 Darwin/21.4.0 exe/x86_64 prompt/off
+```
 
-  name          = "exmple"
-  stack         = "dev"
-  detail        = "extra-desc"
-  region        = "${var.aws_region}"
-  vpc           = "${var.vpc_id}"
-  azs           = "${var.azs}"
-  subnets       = "${var.subnet_ids}"
-  tags          = "${map("env", var.stack_name)}"
-  type          = "EC2"
-  node_type     = "m5.large"
-  node_size     = "3"
-  node_vol_size = "256"
+### Terraform
+Terraform is an open-source infrastructure as code software tool that enables you to safely and predictably create, change, and improve infrastructure.
 
-  services = "${list(
-    map("name", "test-ecs-nginx", "task_file", "${path.cwd}/tasks/nginx.json"),
-  )}"
+#### Install
+This is the official guide for terraform binary installation. Please visit this [Install Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli) website and follow the instructions.
+
+Or, you can manually get a specific version of terraform binary from the websiate. Move to the [Downloads](https://www.terraform.io/downloads.html) page and look for the appropriate package for your system. Download the selected zip archive package. Unzip and install terraform by navigating to a directory included in your system's `PATH`.
+
+Or, you can use [tfenv](https://github.com/tfutils/tfenv) utility. It is very useful and easy solution to install and switch the multiple versions of terraform-cli.
+
+First, install tfenv using brew.
+```
+brew install tfenv
+```
+Then, you can use tfenv in your workspace like below.
+```
+tfenv install <version>
+tfenv use <version>
+```
+Also this tool is helpful to upgrade terraform v0.12. It is a major release focused on configuration language improvements and thus includes some changes that you'll need to consider when upgrading. But the version 0.11 and 0.12 are very different. So if some codes are written in older version and others are in 0.12 it would be great for us to have nice tool to support quick switching of version.
+```
+tfenv list
+tfenv install latest
+tfenv use <version>
+```
+
+### Setup
+```
+module "ecs" {
+  source  = "Young-ook/ecs/aws"
+  name    = "ecs"
+  tags    = { env = "test" }
 }
 ```
-
-### Fargate cluster
-This is an example to show how to create a fargate cluster and deploy two service.
-
+Run terraform:
 ```
-module "your_fgt" {
-  source  = "youngookkim/ecs/aws"
-  version = "1.0.0"
-
-  name        = "exmple"
-  stack       = "dev"
-  detail      = "extra-desc"
-  region      = "${var.aws_region}"
-  vpc         = "${var.vpc_id}"
-  azs         = "${var.azs}"
-  subnets     = "${var.subnet_ids}"
-  tags        = "${map("env", var.stack_name)}"
-  type        = "FARGATE"
-}
+terraform init
+terraform apply
 ```
+
+# Additional Resources
+- [Amazon ECS Workshop](https://ecsworkshop.com/)
+- [Amazon ECS Scalability Best Practices](https://nathanpeck.com/amazon-ecs-scaling-best-practices/)

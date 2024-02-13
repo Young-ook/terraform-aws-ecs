@@ -1,3 +1,25 @@
-output "cluster_id" {
-  value = "${aws_ecs_cluster.this.id}"
+### output variables
+
+output "cluster" {
+  description = "The ECS cluster attributes"
+  value = {
+    control_plane = aws_ecs_cluster.cp
+    data_plane    = aws_ecs_capacity_provider.ng
+  }
+}
+
+output "role_arn" {
+  description = "The generated role ARN of the ECS node group"
+  value = (local.node_groups_enabled ? zipmap(
+    ["name", "arn"],
+    [aws_iam_role.ng["enabled"].name, aws_iam_role.ng["enabled"].arn]
+  ) : null)
+}
+
+output "features" {
+  description = "Features configurations for the ECS"
+  value = {
+    "node_groups_enabled" = local.node_groups_enabled
+    "fargate_enabled"     = !local.node_groups_enabled
+  }
 }
